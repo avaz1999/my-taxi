@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/my_taxi
+    username: postgres
+    password: root123
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+#      ddl-auto: update
