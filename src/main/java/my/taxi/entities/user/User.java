@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    private Language language = Language.UZ;
+    private Language language = Language.UZ_LATN;
 
     @Column(name = "blocked", nullable = false)
     private boolean blocked;
