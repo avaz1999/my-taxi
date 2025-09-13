@@ -5,5 +5,5 @@ package my.taxi.entities.user.enums;
  * Date: 9/10/2025
  */
 public enum DriverStatus {
-    DRAFT
+    DRAFT, PENDING_REVIEW, APPROVED, REJECTED, SUSPENDED
 }

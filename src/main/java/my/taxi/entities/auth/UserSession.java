@@ -22,8 +22,8 @@ import java.util.UUID;
 @Table(name = "user_sessions",
         indexes = {
                 @Index(name = "idx_user_sessions_user", columnList = "user_id"),
-                @Index(name = "idx_user_sessions_revoked_at", columnList = "revoked_at"),
-                @Index(name = "idx_user_sessions_user_revoked", columnList = "user_id, revoked")
+                @Index(name = "idx_session_user_revoked", columnList = "user_id,revoked"),
+                @Index(name = "idx_session_expires_at", columnList = "expires_at")
         })
 @SQLDelete(sql = "UPDATE user_sessions SET deleted_at = now() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")

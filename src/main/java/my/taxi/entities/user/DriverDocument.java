@@ -12,7 +12,16 @@ import my.taxi.entities.user.enums.DocumentType;
  * Date: 9/10/2025
  */
 @Entity
-@Table(name = "dirver_documents")
+@Table(
+        name = "driver_documents",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_driver_doc_type", columnNames = {"driver_id", "doc_type"}
+        ),
+        indexes = {
+                @Index(name = "idx_driver_documents_driver", columnList = "driver_id"),
+                @Index(name = "idx_driver_documents_status", columnList = "status")
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,9 +30,9 @@ import my.taxi.entities.user.enums.DocumentType;
 public class DriverDocument extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false,
+    @JoinColumn(name = "driver_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_driver_documents_driver"))
-    private User user;
+    private DriverProfile driver;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "doc_type", nullable = false, length = 32)
@@ -36,6 +45,10 @@ public class DriverDocument extends BaseEntity {
     @Column(name = "status", nullable = false, length = 16)
     private DocumentStatus status;
 
+    @PrePersist
+    public void prePersist() {
+        if(status == null) this.status = DocumentStatus.PENDING;
+    }
 
 
 

@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLRestriction;
  * Date: 9/10/2025
  */
 @Entity
-@Table(name = "staf_proffiles",
+@Table(name = "staff_profiles",
         indexes = @Index(name = "idx_staff_user", columnList = "user_id"))
 @SQLDelete(sql = "UPDATE staff_profiles SET deleted_at = now() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
@@ -36,4 +36,7 @@ public class StaffProfile extends BaseEntity {
 
     @Column(name = "last_name", nullable = false, length = 64)
     private String lastName;
+
+    @Column(name = "must_change_password")
+    private boolean mustChangePassword;
 }

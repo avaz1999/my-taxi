@@ -11,11 +11,7 @@ import org.hibernate.annotations.SQLRestriction;
  * Date: 9/10/2025
  */
 @Entity
-@Table(
-        name = "clients",
-        uniqueConstraints = @UniqueConstraint(name = "uk_clients_phone", columnNames = {"phone"}),
-        indexes = @Index(name = "idx_clients_phone", columnList = "phone")
-)
+@Table(name = "clients")
 @SQLDelete(sql = "UPDATE clients SET deleted_at = now() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 @Getter

@@ -6,8 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import my.taxi.base.BaseEntity;
+import my.taxi.entities.user.enums.Language;
 import my.taxi.entities.user.enums.Role;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,6 +24,8 @@ import java.util.Set;
                 @Index(name = "idx_users_phone", columnList = "phone"),
                 @Index(name = "idx_users_blocked", columnList = "blocked")
         })
+@SQLDelete(sql = "UPDATE clients SET deleted_at = now() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -33,10 +39,16 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_roles_user")))
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 24)
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private Language language = Language.UZ;
 
     @Column(name = "blocked", nullable = false)
     private boolean blocked;
+
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
 
 }

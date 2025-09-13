@@ -1,8 +1,6 @@
 package my.taxi.entities.file;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +12,11 @@ import my.taxi.base.BaseEntity;
  * 11.09.2025
  */
 @Entity
-@Table(name = "file_item")
+@Table(name = "file_item", indexes = {
+        @Index(name = "idx_file_hash", columnList = "hash_id")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "uk_file_hash", columnNames = {"hash_id"})
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -31,5 +33,4 @@ public class FileItem extends BaseEntity {
 
     @Column(name = "hash_id")
     private String hashId;
-
 }

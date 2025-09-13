@@ -7,6 +7,8 @@ import my.taxi.entities.user.enums.DriverStatus;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.math.BigDecimal;
+
 /**
  * Created by Avaz Absamatov
  * Date: 9/10/2025
@@ -41,8 +43,11 @@ public class DriverProfile extends BaseEntity {
     @Column(name = "status", nullable = false, length = 24)
     private DriverStatus status;
 
+    @Column(name = "balance", precision = 19, scale = 2, nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
+
     @Column(name = "rating_avg", precision = 3, scale = 2)
-    private Double ratingAvg;
+    private BigDecimal ratingAvg;
 
     @Column(name = "rating_count")
     private Integer ratingCount;
@@ -50,7 +55,7 @@ public class DriverProfile extends BaseEntity {
     @PrePersist
     public void prePersist() {
         if (status == null) this.status = DriverStatus.DRAFT;
-        if (ratingAvg == null) ratingAvg = 0.0;
+        if (ratingAvg == null) ratingAvg = BigDecimal.valueOf(0.0);
         if (ratingCount == null) ratingCount = 0;
     }
 }
