@@ -7,4 +7,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-#      ddl-auto: update
+
+  security:
+    filter:
+      order: -100
+
+security:
+
+  jwt:
+    secret: ${JWT_SECRET:change-me-256bit-key}   # 32+ bayt bo'lsin
+    access-exp-min: 30
+    refresh-exp-days: 7
