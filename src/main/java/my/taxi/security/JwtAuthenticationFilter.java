@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NotNull HttpServletRequest request,
             @NotNull HttpServletResponse response,
             @NotNull FilterChain chain) throws ServletException, IOException {
-        String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
+        /*String auth = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (auth == null || !auth.startsWith("Bearer ")) {
             chain.doFilter(request, response);
@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.error("JWT filter error: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        }*/
 
 
     }
