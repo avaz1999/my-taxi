@@ -13,8 +13,15 @@ spring:
       order: -100
 
 security:
-
   jwt:
-    secret: ${JWT_SECRET:change-me-256bit-key}   # 32+ bayt bo'lsin
-    access-exp-min: 30
-    refresh-exp-days: 7
+    secret: "0ecf5057a52ef188107617953f7f42d560c747f092a0707c0339f40b0da01690"
+    access-exp-min: 15
+    refresh-exp-days: 30
+    issuer: "taxi-app"
+    audience: "taxi-clients"
+    clock-skew-sec: 30
+  features:
+    totp-2fa: false
+    brute-guard: true
+    token-blacklist: true
+    ip-allowlist: false

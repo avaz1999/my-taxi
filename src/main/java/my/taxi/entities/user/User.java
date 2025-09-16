@@ -11,8 +11,7 @@ import my.taxi.entities.user.enums.Role;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by: Avaz Absamatov
@@ -24,7 +23,7 @@ import java.util.Set;
                 @Index(name = "idx_users_phone", columnList = "phone"),
                 @Index(name = "idx_users_blocked", columnList = "blocked")
         })
-@SQLDelete(sql = "UPDATE clients SET deleted_at = now() WHERE id = ?")
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor
 @AllArgsConstructor
