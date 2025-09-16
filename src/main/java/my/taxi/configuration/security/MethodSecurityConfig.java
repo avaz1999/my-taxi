@@ -11,11 +11,11 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
  */
 @Configuration
 public class MethodSecurityConfig {
-    @Bean
+   /* @Bean
     RoleHierarchy roleHierarchy() {
         String hierarchy = "ROLE_ADMIN > ROLE_MANAGER\nROLE_MANAGER > ROLE_OPERATOR\nROLE_OPERATOR > ROLE_DRIVER\nROLE_DRIVER > ROLE_CLIENT";
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl(hierarchy);
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
-    }
+    }*/
 }
