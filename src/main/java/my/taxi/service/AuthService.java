@@ -1,9 +1,13 @@
 package my.taxi.service;
 
+import my.taxi.base.Request;
+import my.taxi.base.Response;
 import my.taxi.entities.user.User;
 import my.taxi.payload.request.LoginRequest;
 import my.taxi.repository.UserRepository;
-import my.taxi.security.JwtService;
+import my.taxi.security.JWTService;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,18 +17,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private final JWTService jwtService;
 
-    public AuthService(UserRepository userRepository, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, JWTService jwtService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
 
-    public String login(LoginRequest request) {
-        User user = userRepository.findByPhone(request.getPhone());
+    public Response<String> login(Request<LoginRequest> request) {
+        LoginRequest params = request.getParams();
+        User user = userRepository.findByPhone(params.getPhone());
         if (user == null) {
-            return "Invalid phone or password";
+            return Response.fail(404, "User not found", HttpStatus.NOT_FOUND);
         }
-        return null;
+        return Response.ok(jwtService.generateAccessToken(user));
+    }
+
+    public UserDetails loadByPhone(String phone) {
+        return userRepository.findByPhone(phone);
     }
 }

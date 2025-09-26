@@ -6,22 +6,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+#      ddl-auto: create
+      ddl-auto: update
 
+application:
   security:
-    filter:
-      order: -100
-
-security:
-  jwt:
-    secret: "0ecf5057a52ef188107617953f7f42d560c747f092a0707c0339f40b0da01690"
-    access-exp-min: 15
-    refresh-exp-days: 30
-    issuer: "taxi-app"
-    audience: "taxi-clients"
-    clock-skew-sec: 30
-  features:
-    totp-2fa: false
-    brute-guard: true
-    token-blacklist: true
-    ip-allowlist: false
+    jwt:
+      issuer: my_taxi_app
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 60000000
+      refresh-token:
+        expiration: 6048000000

@@ -27,10 +27,6 @@ public class StaffProfile extends BaseEntity {
             foreignKey = @ForeignKey(name = "fk_staff_profiles_user"))
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "staff_role", nullable = false, length = 24)
-    private Role staffRole; // OPERATOR / ADMIN / MANAGER
-
     @Column(name = "first_name", nullable = false, length = 64)
     private String firstName;
 

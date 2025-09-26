@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * Created by: Avaz Absamatov
@@ -31,7 +30,7 @@ public class BaseEntity implements Serializable {
     private Long id;
 
     @CreatedBy
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false)
     private Long createdBy;
 
     @LastModifiedBy

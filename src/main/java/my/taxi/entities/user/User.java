@@ -10,8 +10,12 @@ import my.taxi.entities.user.enums.Language;
 import my.taxi.entities.user.enums.Role;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Avaz Absamatov
@@ -29,7 +33,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     @Column(name = "phone", unique = true, nullable = false)
     private String phone;
 
@@ -50,4 +54,20 @@ public class User extends BaseEntity {
     private boolean active;
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .toList();
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return phone;
+    }
 }

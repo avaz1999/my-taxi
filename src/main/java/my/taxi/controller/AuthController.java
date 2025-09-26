@@ -1,7 +1,11 @@
 package my.taxi.controller;
 
+import jakarta.validation.Valid;
+import my.taxi.base.Request;
+import my.taxi.base.Response;
 import my.taxi.payload.request.LoginRequest;
 import my.taxi.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping(LOGIN)
-    public String login(@RequestBody LoginRequest request) {
-        return service.login(request);
+    public ResponseEntity<Response<String>> login(@Valid @RequestBody Request<LoginRequest> request) {
+        return ResponseEntity.ok(service.login(request));
     }
 }
