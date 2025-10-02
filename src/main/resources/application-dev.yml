@@ -6,14 +6,17 @@ spring:
 
   jpa:
     hibernate:
-#      ddl-auto: create
+      #      ddl-auto: create
       ddl-auto: update
 
-application:
-  security:
-    jwt:
-      issuer: my_taxi_app
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 60000000
-      refresh-token:
-        expiration: 6048000000
+security:
+  jwt:
+    issuer: my_taxi
+    audience: my.taxi.app
+    secret-base64: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    access-exp-min: 10
+    refresh-exp-days: 14
+    cookie:
+      refresh-name: "refresh_token"
+      same-site: "Strict"
+

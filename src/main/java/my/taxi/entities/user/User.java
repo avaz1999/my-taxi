@@ -14,8 +14,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by: Avaz Absamatov
@@ -53,6 +54,27 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    /**
+     * tokenVersion — simple way to invalidate ALL old tokens of a user.
+     * <p>
+     * How it works:
+     * - We put the current tokenVersion into every issued JWT (claim: "ver").
+     * - On each request, we compare JWT "ver" with the user's tokenVersion in DB.
+     * - If they are different → the token is considered invalid (force re-login).
+     * <p>
+     * When to increment (bump) tokenVersion:
+     * - User changes password.
+     * - User roles/permissions change.
+     * - User clicks "Logout from all devices".
+     * - Security incident (suspicious login, etc.).
+     * <p>
+     * Why we need it:
+     * - Without tokenVersion, old tokens stay valid until they expire.
+     * - With tokenVersion, we can instantly revoke all existing tokens for that user.
+     */
+
+    @Column(name = "token_version")
+    private long tokenVersion = 0L;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

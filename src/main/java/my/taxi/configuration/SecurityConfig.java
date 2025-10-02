@@ -1,7 +1,7 @@
 package my.taxi.configuration;
 
 import lombok.RequiredArgsConstructor;
-import my.taxi.security.JWTAuthorizationFilter;
+import my.taxi.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JWTAuthorizationFilter jwtFilter;
+    private final JwtAuthenticationFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/api/login").permitAll()
+                        .requestMatchers("/v1/api/auth").permitAll()
                         .requestMatchers(
                                 "/", "/actuator/health",
                                 "/swagger-ui/**", "/v3/api-docs/**"

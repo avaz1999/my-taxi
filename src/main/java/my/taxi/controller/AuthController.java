@@ -1,6 +1,9 @@
 package my.taxi.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import my.taxi.base.Request;
 import my.taxi.base.Response;
 import my.taxi.payload.request.LoginRequest;
@@ -19,15 +22,21 @@ import static my.taxi.utils.ApiConstants.*;
  */
 @RestController
 @RequestMapping(BASE_URL + AUTH)
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthService service;
 
-    public AuthController(AuthService service) {
-        this.service = service;
-    }
 
     @PostMapping(LOGIN)
-    public ResponseEntity<Response<String>> login(@Valid @RequestBody Request<LoginRequest> request) {
-        return ResponseEntity.ok(service.login(request));
+    public ResponseEntity<Response<String>> login(
+            @Valid @RequestBody Request<LoginRequest> dto,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        return ResponseEntity.ok(service.handleLogin(dto, request, response));
+    }
+
+    @PostMapping(REFRESH_TOKEN)
+    public ResponseEntity<Response<String>> refreshToken(HttpServletRequest req, HttpServletResponse res) {
+        return service.handleRefresh(req, res);
     }
 }

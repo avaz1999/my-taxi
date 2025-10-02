@@ -1,98 +1,88 @@
 package my.taxi.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
-import my.taxi.entities.user.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.RequiredArgsConstructor;
+import my.taxi.security.web.JwtProperties;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
+import java.util.*;
 
 /**
  * Created by Avaz Absamatov
- * Date: 9/23/2025
+ * Date: 10/1/2025
  */
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class JWTService {
-    @Value("${application.security.jwt.secret-key}")
-    private String secret;
-    @Value("${application.security.jwt.expiration}")
-    private Long expirationAccessTokenExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private Long refreshTokenExpiration;
-    @Value("${application.security.jwt.issuer}")
-    private String issuer;
+    private static final long CLOCK_SKEW_MILLIS = 2000L;
+    private final JwtProperties properties;
 
-    private static final String PHONE = "phone";
-    private static final String USER_ID = "userId";
-    private static final String ROLES = "roles";
-    private static final long CLOCK_SKEW = 60L * 1000L;
-
-
-    public String extractPhone(String token) {
-        Claims claims = extractClaims(token);
-        return claims.get(PHONE, String.class);
-    }
-
-    private Claims extractClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSiginingKey())
-                .build()
-                .parseClaimsJws(token).getBody();
-    }
-
-    public boolean isTokenExpired(String token) {
-        Date expiration = extractClaim(token, Claims::getExpiration);
-        return expiration.before(new Date(System.currentTimeMillis() + CLOCK_SKEW));
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String phone = extractPhone(token);
-        return (Objects.equals(phone, userDetails.getUsername()) && isTokenExpired(token));
-    }
-
-    public String generateAccessToken(User user) {
-        List<String> roles = user.getRoles().stream().map(Enum::name).toList();
-        Map<String, Object> claims = Map.of(
-                PHONE, user.getPhone(),
-                USER_ID, user.getId(),
-                ROLES, roles
-        );
-        return createToken(claims, user, expirationAccessTokenExpiration);
-    }
-
-    private String createToken(Map<String, Object> claims, User user, Long expiration) {
-        return Jwts.builder()
-                .setIssuer(issuer)
-                .setSubject(user.getPhone())
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSiginingKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-        Claims claims = extractClaims(token);
-        return claimResolver.apply(claims);
-    }
-
-    private Key getSiginingKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+    public SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(properties.getSecretBase64());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    private JwtParser parser() {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .requireIssuer(properties.getIssuer())
+                .setAllowedClockSkewSeconds(CLOCK_SKEW_MILLIS)
+                .build();
+    }
+
+    public String issueAccess(Long userId, String subjectPhone, Set<String> roles, long tokenVersion) {
+        long now = System.currentTimeMillis();
+        Map<String, Object> claims = Map.of(
+                "typ", "access",
+                "uid", userId,
+                "roles", roles,
+                "ver", tokenVersion
+        );
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuer(properties.getIssuer())
+                .setAudience(properties.getAudience())
+                .setSubject(subjectPhone)
+                .setId(UUID.randomUUID().toString()) // jti
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + properties.getAccessExpMin() * 60_000L))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String issueRefresh(Long userId, String familyId, String jti, long tokenVersion) {
+        long now = System.currentTimeMillis();
+        Map<String, Object> claims = Map.of(
+                "typ", "refresh",
+                "uid", userId,
+                "fid", familyId,
+                "ver", tokenVersion
+        );
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuer(properties.getIssuer())
+                .setAudience(properties.getAudience())
+                .setSubject(String.valueOf(userId))
+                .setId(jti)
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + properties.getRefreshExpDays() * 24L * 60L * 60L * 1000L))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public Claims verify(String token) {
+        return parser().parseClaimsJws(token).getBody();
+    }
+
+    public boolean isExpired(String token) {
+        try {
+            Date exp = verify(token).getExpiration();
+            return exp.before(new Date());
+        } catch (JwtException e) {
+            return true;
+        }
+    }
 }
