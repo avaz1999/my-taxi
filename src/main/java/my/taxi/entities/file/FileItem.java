@@ -12,25 +12,25 @@ import my.taxi.base.BaseEntity;
  * 11.09.2025
  */
 @Entity
-@Table(name = "file_item", indexes = {
-        @Index(name = "idx_file_hash", columnList = "hash_id")
+@Table(name = "FILE_ITEM", indexes = {
+        @Index(name = "idx_file_hash", columnList = "hashId")
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "uk_file_hash", columnNames = {"hash_id"})
+        @UniqueConstraint(name = "uk_file_hash", columnNames = {"HASH_ID"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class FileItem extends BaseEntity {
-    @Column(name = "file_name")
+    @Column(name = "FILE_NAME")
     private String fileName;
 
-    @Column(name = "file_path")
+    @Column(name = "FILE_PATH")
     private String filePath;
 
-    @Column(name = "file_size")
+    @Column(name = "FILE_SIZE")
     private Long fileSize;
 
-    @Column(name = "hash_id")
+    @Column(name = "HASH_ID")
     private String hashId;
 }

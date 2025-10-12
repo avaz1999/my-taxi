@@ -19,4 +19,6 @@ security:
     cookie:
       refresh-name: "refresh_token"
       same-site: "Strict"
+    max-session: 5
+  hmacSecret: 345676543HELLO
 

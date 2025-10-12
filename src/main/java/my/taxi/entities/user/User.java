@@ -92,4 +92,14 @@ public class User extends BaseEntity implements UserDetails {
     public String getUsername() {
         return phone;
     }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !blocked;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active;
+    }
 }

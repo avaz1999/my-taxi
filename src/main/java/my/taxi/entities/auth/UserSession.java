@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import my.taxi.base.BaseEntity;
 import my.taxi.entities.auth.enums.PlatformType;
-import my.taxi.entities.user.User;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -19,14 +16,12 @@ import java.util.UUID;
  * Date: 9/10/2025
  */
 @Entity
-@Table(name = "user_sessions",
+@Table(name = "USER_SESSIONS",
         indexes = {
-                @Index(name = "idx_user_sessions_user", columnList = "user_id"),
-                @Index(name = "idx_session_user_revoked", columnList = "user_id,revoked"),
-                @Index(name = "idx_session_expires_at", columnList = "expires_at")
-        })
-@SQLDelete(sql = "UPDATE user_sessions SET deleted_at = now() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
+                @Index(name = "idx_user_sessions_user", columnList = "USER_ID"),
+                @Index(name = "idx_session_user_revoked", columnList = "USER_ID,REVOKED"),
+                @Index(name = "idx_session_expires_at", columnList = "EXPIRES_AT")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -35,10 +30,8 @@ public class UserSession extends BaseEntity {
     /**
      * The user to whom this session belongs.
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_user_sessions_users"))
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     /**
      * User sessionId (with cookie/header)

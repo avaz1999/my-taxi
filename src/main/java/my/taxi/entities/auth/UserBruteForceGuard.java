@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import my.taxi.base.BaseEntity;
 import my.taxi.entities.auth.enums.BrutScope;
-import my.taxi.entities.user.User;
 
 import java.time.Instant;
 
@@ -16,51 +15,49 @@ import java.time.Instant;
  * Date: 9/13/2025
  */
 @Entity
-@Table(name = "user_brute_force_guard")
+@Table(name = "USER_BRUTE_FORCE_GUARD")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class UserBruteForceGuard extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_user_brute_force_guard_users"))
-    private User user;
+    @Column(name = "USER_ID")
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private BrutScope scope;
 
-    @Column(name = "failed_attempts", nullable = false)
+    @Column(name = "FAILED_ATTEMPTS", nullable = false)
     private int failedAttempts;
 
-    @Column(name = "windows_started_at")
+    @Column(name = "WINDOWS_STARTED_AT")
     private Instant windowsStartedAt;
 
-    @Column(name = "last_failed_at")
+    @Column(name = "LAST_FAILED_AT")
     private Instant lastFailedAt;
 
-    @Column(name = "locked_until")
+    @Column(name = "LOCKED_UNTIL")
     private Instant lockedUntil;
 
-    @Column(name = "strike", nullable = false)
+    @Column(name = "STRIKE", nullable = false)
     private short strike;
 
-    @Column(name = "threshold", nullable = false)
+    @Column(name = "THRESHOLD", nullable = false)
     private int threshold;
 
-    @Column(name = "window_sec", nullable = false)
+    @Column(name = "WINDOW_SEC", nullable = false)
     private int windowSec;
 
-    @Column(name = "lock1_sec", nullable = false)
+    @Column(name = "LOCK1_SEC", nullable = false)
     private long lock1Sec;
 
-    @Column(name = "lock2_sec", nullable = false)
+    @Column(name = "LOCK2_SEC", nullable = false)
     private long lock2Sec;
 
-    @Column(name = "last_ip", length = 64)
+    @Column(name = "LAST_IP", length = 64)
     private String lastIP;
 
-    @Column(name = "last_user_agent", length = 250)
+    @Column(name = "LAST_USER_AGENT", length = 250)
     private String lastUserAgent;
 
     public boolean isLockedNow() {

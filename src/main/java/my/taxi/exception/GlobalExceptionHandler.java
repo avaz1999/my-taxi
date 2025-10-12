@@ -83,7 +83,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(body);
     }
 
-    // --- Helper ---
     private String formatFieldError(FieldError fieldError) {
         return fieldError.getField() + " " + fieldError.getDefaultMessage();
     }

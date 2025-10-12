@@ -17,5 +17,4 @@ public class ApiError {
     private Integer code;
     private String message;
     private List<String> details;
-
 }

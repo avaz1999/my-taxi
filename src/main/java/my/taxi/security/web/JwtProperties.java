@@ -18,6 +18,7 @@ public class JwtProperties {
     private String audience;
     private String secretBase64;
     private long accessExpMin;
+    private short maxSession;
     private long refreshExpDays;
 
     private CookieProps cookie = new CookieProps();
