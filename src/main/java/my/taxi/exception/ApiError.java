@@ -2,6 +2,7 @@ package my.taxi.exception;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiError {
+public class ApiError implements Serializable {
     private Integer code;
     private String message;
     private List<String> details;

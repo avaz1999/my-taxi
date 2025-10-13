@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
      * DTO validatsiya xatolari (@Valid / @NotBlank / @Size ...)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response<?>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Response<ApiError>> handleValidation(MethodArgumentNotValidException ex) {
         List<String> violations = ex.getBindingResult().getFieldErrors().stream()
                 .map(this::formatFieldError)
                 .toList();
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 .details(violations) // agar details qo‘shsang
                 .build();
 
-        Response<?> body = Response.fail(
+        Response<ApiError> body = Response.fail(
                 HttpStatus.BAD_REQUEST.value(),
                 apiError,
                 HttpStatus.BAD_REQUEST
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
      * ConstraintViolationException (masalan, @Validated service-level)
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Response<?>> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<Response<ApiError>> handleConstraintViolation(ConstraintViolationException ex) {
         List<String> violations = ex.getConstraintViolations().stream()
                 .map(cv -> cv.getPropertyPath() + " " + cv.getMessage())
                 .toList();
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
                 .details(violations) // agar details maydonini qo‘shsang
                 .build();
 
-        Response<?> body = Response.fail(
+        Response<ApiError> body = Response.fail(
                 HttpStatus.BAD_REQUEST.value(),
                 apiError.getMessage(),
                 HttpStatus.BAD_REQUEST
@@ -69,12 +69,12 @@ public class GlobalExceptionHandler {
      * Boshqa barcha Exception lar
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Response<?>> handleAll(Exception ex) {
+    public ResponseEntity<Response<ApiError>> handleAll(Exception ex) {
         String errorId = UUID.randomUUID().toString();
 
         log.error("Unexpected error [{}]: {}", errorId, ex.getMessage(), ex);
 
-        Response<?> body = Response.fail(
+        Response<ApiError> body = Response.fail(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Unexpected error. Reference ID: " + errorId,
                 HttpStatus.INTERNAL_SERVER_ERROR
